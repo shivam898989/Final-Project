@@ -1,0 +1,14 @@
+{
+    "name": "mdtl-zk-circuits",
+    "version": "1.0.0",
+    "description": "MDTL Platform ZK Proof Circuits",
+    "scripts": {
+        "build": "bash scripts/build.sh",
+        "test:income": "node scripts/test-income.js",
+        "test:hours": "node scripts/test-hours.js"
+    },
+    "devDependencies": {
+        "circomlib": "^2.0.5",
+        "snarkjs": "^0.7.3"
+    }
+}

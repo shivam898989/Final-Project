@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+.expo/
+
+# environment
+.env
+.env.local
+.env.production
+
+# artifacts
+artifacts/
+cache/
+typechain-types/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ZK build artifacts
+zk-circuits/build/
+
+# logs
+*.log
+npm-debug.log*

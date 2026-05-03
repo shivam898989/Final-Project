@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDTL Issuer Portal</title>
+    <meta name="description"
+        content="MDTL Credential Issuer Portal — Issue and manage verifiable work credentials for informal workers">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F0F2F8;
+            --surface: #FFFFFF;
+            --surface-solid: #FFFFFF;
+            --surface2: #F8F9FC;
+            --border: rgba(99, 102, 241, 0.12);
+            --border-solid: #E2E8F0;
+            --primary: #6366F1;
+            --primary-light: #6366F1;
+            --primary-glow: rgba(99, 102, 241, 0.18);
+            --accent: #F59E0B;
+            --accent-glow: rgba(245, 158, 11, 0.15);
+            --text: #1E293B;
+            --text2: #475569;
+            --text3: #94A3B8;
+            --success: #10B981;
+            --success-glow: rgba(16, 185, 129, 0.12);
+            --warning: #F97316;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --gradient-primary: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            --gradient-accent: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
+            --gradient-surface: linear-gradient(135deg, #FFFFFF 0%, #F8F9FC 100%);
+            --glass: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(99, 102, 241, 0.08);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+            --shadow-xl: 0 16px 48px rgba(0,0,0,0.1);
+        }
+
+        /* ── Dark Theme ── */
+        [data-theme="dark"] {
+            --bg: #0B0F1A;
+            --surface: rgba(20, 25, 45, 0.92);
+            --surface-solid: #141929;
+            --surface2: #1B2236;
+            --border: rgba(99, 102, 241, 0.15);
+            --border-solid: #1E2A4A;
+            --primary: #818CF8;
+            --primary-light: #818CF8;
+            --primary-glow: rgba(129, 140, 248, 0.2);
+            --accent: #FBBF24;
+            --accent-glow: rgba(251, 191, 36, 0.15);
+            --text: #F1F5F9;
+            --text2: #CBD5E1;
+            --text3: #64748B;
+            --success: #34D399;
+            --success-glow: rgba(52, 211, 153, 0.15);
+            --warning: #FB923C;
+            --danger: #F87171;
+            --info: #60A5FA;
+            --gradient-primary: linear-gradient(135deg, #818CF8 0%, #A78BFA 100%);
+            --gradient-accent: linear-gradient(135deg, #FBBF24 0%, #FB923C 100%);
+            --gradient-surface: linear-gradient(135deg, #141929 0%, #1B2236 100%);
+            --glass: rgba(20, 25, 45, 0.85);
+            --glass-border: rgba(99, 102, 241, 0.12);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+            --shadow-xl: 0 16px 48px rgba(0,0,0,0.5);
+        }
+
+        [data-theme="dark"] .header,
+        [data-theme="dark"] .sidebar {
+            background: #0F1322;
+        }
+
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .stat {
+            background: var(--surface-solid);
+        }
+
+        [data-theme="dark"] .table tr:hover td {
+            background: #1B2236;
+        }
+
+        [data-theme="dark"] .form-input,
+        [data-theme="dark"] .form-select {
+            background: #1B2236;
+        }
+
+        /* ── Theme Toggle ── */
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 1px solid var(--border-solid);
+            background: var(--surface2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.08);
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.4s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            background: #FFFFFF;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-solid);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo span {
+            font-size: 28px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 11px;
+            color: var(--text3);
+            letter-spacing: 1px;
+        }
+
+        .admin-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border-solid);
+            border-radius: 8px;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .admin-link:hover {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-badge {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        /* Role Banner */
+        .role-banner {
+            background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(245,158,11,0.04) 100%);
+            border-bottom: 1px solid var(--border-solid);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .role-banner-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .role-banner-text {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.5;
+        }
+
+        .role-banner-text strong {
+            color: var(--primary-light);
+        }
+
+        .role-banner-dismiss {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text3);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .role-banner-dismiss:hover {
+            color: var(--text);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #FFFFFF;
+            border-right: 1px solid var(--border-solid);
+            padding: 20px 0;
+            min-height: calc(100vh - 60px);
+            box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+        }
+
+        .sidebar-item {
+            padding: 12px 24px;
+            color: var(--text2);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(99, 102, 241, 0.04);
+            color: var(--text);
+        }
+
+        .sidebar-item.active {
+            background: #F8F9FC;
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: var(--border-solid);
+            margin: 12px 16px;
+        }
+
+        .sidebar-label {
+            padding: 8px 24px;
+            font-size: 10px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .main {
+            flex: 1;
+            padding: 28px;
+        }
+
+        /* Cards */
+        .card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-solid);
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-solid);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+            font-weight: 500;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border-solid);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px var(--primary-glow);
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            color: var(--text2);
+            border: 1px solid var(--border-solid);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface2);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        /* Table */
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th {
+            text-align: left;
+            padding: 12px 16px;
+            color: var(--text2);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--border-solid);
+        }
+
+        .table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-solid);
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        .table tr:hover td {
+            background: #F8F9FC;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-completed {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        /* Completed Jobs */
+        .job-card {
+            background: var(--surface2);
+            border: 1px solid var(--border-solid);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .job-card:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+            box-shadow: 0 2px 12px var(--primary-glow);
+        }
+
+        .job-card-info {
+            flex: 1;
+        }
+
+        .job-card-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .job-card-meta {
+            display: flex;
+            gap: 16px;
+            color: var(--text3);
+            font-size: 12px;
+        }
+
+        .job-card-action {
+            color: var(--primary-light);
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .autofill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 184, 148, 0.15);
+            color: var(--success);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .card { animation: slideUp 0.5s ease-out both; }
+        .card:nth-child(2) { animation-delay: 0.08s; }
+        .card:nth-child(3) { animation-delay: 0.16s; }
+        .stat { animation: scaleIn 0.4s ease-out both; }
+        .stat:nth-child(1) { animation-delay: 0s; }
+        .stat:nth-child(2) { animation-delay: 0.08s; }
+        .stat:nth-child(3) { animation-delay: 0.16s; }
+        .stat:nth-child(4) { animation-delay: 0.24s; }
+        .sidebar-item { animation: slideInLeft 0.3s ease-out both; }
+        .sidebar-item:nth-child(1) { animation-delay: 0.05s; }
+        .sidebar-item:nth-child(2) { animation-delay: 0.1s; }
+        .sidebar-item:nth-child(3) { animation-delay: 0.15s; }
+        .sidebar-item:nth-child(5) { animation-delay: 0.2s; }
+        .sidebar-item:nth-child(6) { animation-delay: 0.25s; }
+        .section-header { animation: fadeIn 0.5s ease-out; }
+        .btn-primary:active { transform: scale(0.96); }
+        .job-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--success);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            display: none;
+            animation: fadeIn 0.3s;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        /* Onboarding Modal */
+        .onboarding-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); z-index:200; display:flex; align-items:center; justify-content:center; animation:fadeIn 0.3s; }
+        .onboarding-modal { background:#FFFFFF; border:1px solid var(--border-solid); border-radius:20px; padding:36px; max-width:520px; width:90%; text-align:center; animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.265,1.55); box-shadow:var(--shadow-xl); }
+        .onboarding-modal h2 { font-size:24px; font-weight:800; margin-bottom:6px; background:var(--gradient-primary); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .onboarding-modal .subtitle { color:var(--text3); font-size:14px; margin-bottom:24px; }
+        .onboarding-steps { text-align:left; margin-bottom:24px; }
+        .onboarding-step { display:flex; align-items:flex-start; gap:14px; padding:14px; background:var(--surface2); border-radius:12px; margin-bottom:10px; border-left:3px solid var(--primary); }
+        .onboarding-step-num { background:var(--gradient-primary); color:#fff; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; }
+        .onboarding-step-text { font-size:14px; color:var(--text2); line-height:1.5; }
+        .onboarding-step-text strong { color:var(--text); }
+        .onboarding-hindi { display:none; }
+        @keyframes popIn { 0%{opacity:0;transform:scale(0.85)} 70%{transform:scale(1.02)} 100%{opacity:1;transform:scale(1)} }
+
+        /* Tooltip */
+        .tooltip-trigger { display:inline-flex; align-items:center; gap:4px; cursor:help; position:relative; }
+        .tooltip-icon { font-size:14px; color:var(--primary-light); opacity:0.7; transition:opacity 0.2s; }
+        .tooltip-trigger:hover .tooltip-icon { opacity:1; }
+        .tooltip-box { display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:#FFFFFF; border:1px solid var(--primary); border-radius:10px; padding:10px 14px; font-size:12px; color:var(--text2); line-height:1.5; min-width:220px; max-width:300px; z-index:100; box-shadow:var(--shadow-lg); pointer-events:none; }
+        .tooltip-box .hindi { display:none; }
+        .tooltip-trigger:hover .tooltip-box { display:block; animation:fadeIn 0.2s; }
+
+        /* Breadcrumb */
+        .breadcrumb-bar { padding:10px 32px; background:#FFFFFF; border-bottom:1px solid var(--border-solid); display:flex; align-items:center; gap:8px; font-size:13px; }
+        .breadcrumb-item { color:var(--text3); }
+        .breadcrumb-sep { color:var(--text3); opacity:0.4; }
+        .breadcrumb-current { color:var(--primary-light); font-weight:600; }
+
+        /* Section description */
+        .section-header { margin-bottom:24px; }
+        .section-header h2 { font-size:24px; font-weight:800; margin-bottom:6px; }
+        .section-desc { color:var(--text3); font-size:13px; line-height:1.5; }
+        .section-desc .hindi { display:none; }
+
+        /* Form helper text */
+        .form-helper { color:var(--text3); font-size:11px; margin-top:4px; line-height:1.4; }
+        .form-helper .hindi { display:none; }
+        .form-label { display:flex; align-items:center; gap:6px; color:var(--text2); font-size:13px; font-weight:600; margin-bottom:6px; text-transform:none !important; letter-spacing:0 !important; }
+
+        /* Floating Help */
+        .fab-help { position:fixed; bottom:24px; right:24px; width:52px; height:52px; border-radius:50%; background:var(--gradient-primary); color:#fff; border:none; font-size:22px; font-weight:800; cursor:pointer; box-shadow:0 4px 20px var(--primary-glow); z-index:100; transition:transform 0.3s cubic-bezier(0.4,0,0.2,1),box-shadow 0.3s; display:flex; align-items:center; justify-content:center; }
+        .fab-help:hover { transform:scale(1.12) rotate(10deg); box-shadow:0 6px 28px var(--primary-glow); }
+        .help-panel { display:none; position:fixed; bottom:84px; right:24px; width:320px; background:#FFFFFF; border:1px solid var(--border-solid); border-radius:16px; padding:20px; z-index:100; box-shadow:var(--shadow-xl); animation:scaleIn 0.25s ease-out; }
+        .help-panel h3 { font-size:16px; font-weight:700; color:var(--primary-light); margin-bottom:12px; }
+        .help-item { padding:10px 0; border-bottom:1px solid var(--glass-border); font-size:13px; color:var(--text2); line-height:1.5; }
+        .help-item:last-child { border-bottom:none; }
+        .help-item strong { color:var(--text); }
+
+        /* Responsive sidebar */
+        .sidebar-toggle { display:none; background:none; border:none; color:var(--text); font-size:24px; cursor:pointer; padding:8px; transition:transform 0.2s; }
+        .sidebar-toggle:hover { transform:rotate(90deg); }
+        @media(max-width:768px) {
+            .sidebar { position:fixed; left:-260px; top:0; bottom:0; z-index:100; transition:left 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow:var(--shadow-xl); }
+            .sidebar.open { left:0; }
+            .sidebar-toggle { display:block; }
+            .stats { grid-template-columns:repeat(2,1fr) !important; }
+            .form-row { grid-template-columns:1fr !important; }
+            .breadcrumb-bar { padding:10px 16px; }
+            .main { padding:16px; }
+            .header { padding:12px 16px; }
+        }
+
+        /* Section transitions */
+        [id^="section-"] { animation:fadeIn 0.3s ease-out; }
+
+        /* Confirmation modal */
+        .confirm-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:center; justify-content:center; }
+        .confirm-modal { background:#FFFFFF; border:1px solid var(--border-solid); border-radius:16px; padding:28px; max-width:420px; width:90%; text-align:center; animation:popIn 0.3s; box-shadow:var(--shadow-xl); }
+        .confirm-modal h3 { font-size:18px; font-weight:700; margin-bottom:8px; color:var(--text); }
+        .confirm-modal p { color:var(--text3); font-size:13px; margin-bottom:20px; }
+        .confirm-actions { display:flex; gap:10px; justify-content:center; }
+
+        /* Accent on code */
+        code { color:var(--primary-light); }
+
+        /* Search bar */
+        .search-bar { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+        .search-bar input { flex:1; padding:10px 16px; background:var(--surface2); border:1px solid var(--border-solid); border-radius:10px; color:var(--text); font-size:13px; font-family:'Inter',sans-serif; transition:border-color 0.3s, box-shadow 0.3s; }
+        .search-bar input:focus { border-color:var(--primary); outline:none; box-shadow:0 0 0 3px var(--primary-glow); }
+        .search-bar input::placeholder { color:var(--text3); }
+    </style>
+</head>
+
+<body>
+    <!-- Onboarding Modal -->
+    <div class="onboarding-overlay" id="onboardingModal">
+        <div class="onboarding-modal">
+            <div style="font-size:48px;margin-bottom:12px">🏢</div>
+            <h2>Welcome to MDTL Issuer Portal</h2>
+            <div class="subtitle">Issue verifiable work credentials for informal workers</div>
+
+            <div class="onboarding-steps">
+                <div class="onboarding-step">
+                    <div class="onboarding-step-num">1</div>
+                    <div class="onboarding-step-text"><strong>Review completed jobs</strong> — See which workers finished work and are ready for credentials</div>
+                </div>
+                <div class="onboarding-step">
+                    <div class="onboarding-step-num">2</div>
+                    <div class="onboarding-step-text"><strong>Issue a credential</strong> — Fill in details or auto-fill from job data, then sign & issue</div>
+                </div>
+                <div class="onboarding-step">
+                    <div class="onboarding-step-num">3</div>
+                    <div class="onboarding-step-text"><strong>Track on dashboard</strong> — Monitor all issued credentials and worker stats</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;padding:14px" onclick="dismissOnboarding()">Got it! Let's start</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">☰</button>
+            <div class="header-logo">
+                <span>🏢</span>
+                <div>
+                    <div class="header-title">MDTL</div>
+                    <div class="header-subtitle">ISSUER PORTAL</div>
+                </div>
+            </div>
+            <a class="admin-link" href="http://localhost:3004" title="Back to Admin Hub">
+                ← Admin Hub
+            </a>
+        </div>
+        <div class="header-user">
+            <span class="header-badge">Jan Shikshan Sansthan, Mumbai</span>
+            <span style="color:var(--text3);font-size:13px">did:polygon:0x7F2c...A91B</span>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
+        </div>
+    </div>
+
+    <!-- Role Explanation Banner -->
+    <div class="role-banner" id="roleBanner">
+        <div class="role-banner-icon">📜</div>
+        <div class="role-banner-text">
+            <strong>Your role as an Issuer:</strong> You create verified work credentials for workers who complete jobs.
+            Each credential is signed, anchored on Polygon blockchain, and stored on IPFS — giving workers tamper-proof proof of skills.
+        </div>
+        <button class="role-banner-dismiss" onclick="this.parentElement.style.display='none'" title="Dismiss">×</button>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar" id="breadcrumb">
+        <span class="breadcrumb-item">🏢 MDTL Issuer</span>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current" id="breadcrumbCurrent">Dashboard</span>
+    </div>
+
+    <div class="layout">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-item active" onclick="showSection('dashboard')">📊 Dashboard</div>
+            <div class="sidebar-item" onclick="showSection('issue')">📝 Issue Credential</div>
+            <div class="sidebar-item" onclick="showSection('credentials')">📄 Issued Credentials</div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-label">Management</div>
+            <div class="sidebar-item" onclick="showSection('workers')">👷 Workers</div>
+            <div class="sidebar-item" onclick="showSection('settings')">⚙️ Settings</div>
+        </div>
+
+        <div class="main">
+            <!-- Dashboard Section -->
+            <div id="section-dashboard">
+                <div class="section-header">
+                    <h2>Issuer Dashboard</h2>
+                    <div class="section-desc">Overview of your credential issuance activity and worker stats.</div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">234</div>
+                        <div class="stat-label">Credentials Issued</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">78</div>
+                        <div class="stat-label">Active Workers</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">97.8%</div>
+                        <div class="stat-label">Validity Rate</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">920</div>
+                        <div class="stat-label">On-chain Score</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Recent Credentials</div>
+                    <div class="search-bar"><input type="text" placeholder="🔍 Search workers, skills..." onkeyup="filterTable(this,'dashTable')"></div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Worker</th>
+                                <th>Skill</th>
+                                <th>Hours</th>
+                                <th>Income</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ravi Kumar Yadav</td>
+                                <td>Masonry (NSQF L3)</td>
+                                <td>312h</td>
+                                <td>₹46,800</td>
+                                <td>Mar 1, 2026</td>
+                                <td><span class="badge badge-active">ACTIVE</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sunita Devi</td>
+                                <td>Plumbing & Sanitation (L2)</td>
+                                <td>192h</td>
+                                <td>₹28,800</td>
+                                <td>Feb 28, 2026</td>
+                                <td><span class="badge badge-active">ACTIVE</span></td>
+                            </tr>
+                            <tr>
+                                <td>Amit Paswan</td>
+                                <td>Electrical Wiring (L4)</td>
+                                <td>480h</td>
+                                <td>₹72,000</td>
+                                <td>Feb 15, 2026</td>
+                                <td><span class="badge badge-active">ACTIVE</span></td>
+                            </tr>
+                            <tr>
+                                <td>Deepak Meena</td>
+                                <td>Bar Bending</td>
+                                <td>144h</td>
+                                <td>₹25,200</td>
+                                <td>Jan 20, 2026</td>
+                                <td><span class="badge badge-pending">ANCHORING</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Issue Credential Section -->
+            <div id="section-issue" style="display:none">
+                <div class="section-header">
+                    <h2>Issue New Credential</h2>
+                    <div class="section-desc">Create a new verifiable work credential for a worker.</div>
+                </div>
+
+                <!-- Completed Jobs — Auto-fill -->
+                <div class="card">
+                    <div class="card-title">📋 Completed Jobs — Click to Auto-fill</div>
+                    <p style="color:var(--text3);font-size:13px;margin-bottom:16px">
+                        Select a completed job below to automatically fill the credential form with the worker's data.
+
+                    </p>
+                    <div id="completedJobsList">
+                        <div class="job-card" onclick="autoFillFromJob(0)">
+                            <div class="job-card-info">
+                                <div class="job-card-title">Masonry Work — Residential Building</div>
+                                <div class="job-card-meta">
+                                    <span>👷 Ravi Kumar (did:polygon:0x123...456)</span>
+                                    <span>🔨 Masonry</span>
+                                    <span>⏱ 240h</span>
+                                    <span>💰 ₹36,000</span>
+                                </div>
+                            </div>
+                            <div class="job-card-action">Auto-fill →</div>
+                        </div>
+                        <div class="job-card" onclick="autoFillFromJob(1)">
+                            <div class="job-card-info">
+                                <div class="job-card-title">Plumber — Society Maintenance</div>
+                                <div class="job-card-meta">
+                                    <span>👷 Sunita Devi (did:polygon:0x789...012)</span>
+                                    <span>🔨 Plumbing</span>
+                                    <span>⏱ 160h</span>
+                                    <span>💰 ₹32,000</span>
+                                </div>
+                            </div>
+                            <div class="job-card-action">Auto-fill →</div>
+                        </div>
+                        <div class="job-card" onclick="autoFillFromJob(2)">
+                            <div class="job-card-info">
+                                <div class="job-card-title">Electrical Wiring — Commercial Office</div>
+                                <div class="job-card-meta">
+                                    <span>👷 Amit Paswan (did:polygon:0xabc...def)</span>
+                                    <span>🔨 Electrical</span>
+                                    <span>⏱ 320h</span>
+                                    <span>💰 ₹55,000</span>
+                                </div>
+                            </div>
+                            <div class="job-card-action">Auto-fill →</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Credential Form -->
+                <div class="card">
+                    <div class="card-title">Worker Credential Form</div>
+                    <div id="autofillNotice" style="display:none"></div>
+                    <form id="issueForm" onsubmit="issueCredential(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label"><span class="tooltip-trigger">Worker DID <span class="tooltip-icon">ℹ️</span><span class="tooltip-box">Decentralized Identifier — the worker's unique blockchain identity address</span></span></label>
+                                <input class="form-input" type="text" placeholder="did:polygon:0x..." required id="workerDid">
+                                <div class="form-helper">Worker's blockchain identity</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><span class="tooltip-trigger">Skill / Trade <span class="tooltip-icon">ℹ️</span><span class="tooltip-box">The worker's verified skill category per NSQF standards</span></span></label>
+                                <select class="form-select" id="skill">
+                                    <option value="Construction — Masonry (NSQF L3)">Construction — Masonry (NSQF L3)</option>
+                                    <option value="Plumbing & Sanitation (NSQF L2)">Plumbing & Sanitation (NSQF L2)</option>
+                                    <option value="Electrical Wiring — Domestic (NSQF L4)">Electrical Wiring — Domestic (NSQF L4)</option>
+                                    <option value="Shuttering Carpentry">Shuttering Carpentry</option>
+                                    <option value="Bar Bending & Reinforcement">Bar Bending & Reinforcement</option>
+                                    <option value="Welding — Gas & Arc (NSQF L3)">Welding — Gas & Arc (NSQF L3)</option>
+                                    <option value="Painting — Interior & Exterior">Painting — Interior & Exterior</option>
+                                    <option value="Tile & Stone Laying (NSQF L2)">Tile & Stone Laying (NSQF L2)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Work Hours</label>
+                                <input class="form-input" type="number" placeholder="e.g., 120" required id="workHours">
+                                <div class="form-helper">Total hours worked</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Income (₹)</label>
+                                <input class="form-input" type="number" placeholder="e.g., 15000" required id="income">
+                                <div class="form-helper">Total income earned</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Period Start</label>
+                                <input class="form-input" type="date" required id="periodStart">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Period End</label>
+                                <input class="form-input" type="date" required id="periodEnd">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                                <label class="form-label">Location</label>
+                            <input class="form-input" type="text" placeholder="e.g., Mumbai, Maharashtra"
+                                id="location">
+                        </div>
+                        <div style="display:flex;gap:12px;margin-top:8px">
+                            <button type="submit" class="btn btn-primary">🔏 Sign & Issue Credential</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Credentials Section -->
+            <div id="section-credentials" style="display:none">
+                <div class="section-header">
+                    <h2>Issued Credentials</h2>
+                    <div class="section-desc">All credentials you have issued, with IPFS and blockchain status.</div>
+                </div>
+                <div class="card">
+                    <div class="search-bar"><input type="text" placeholder="🔍 Search credentials..." onkeyup="filterTable(this,'credTable')"></div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Worker</th>
+                                <th>Skill</th>
+                                <th>Hours</th>
+                                <th>Income</th>
+                                <th>IPFS</th>
+                                <th>Blockchain</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code style="color:var(--accent)">vc-001</code></td>
+                                <td>did:polygon:0x123...</td>
+                                <td>Masonry</td>
+                                <td>120h</td>
+                                <td>₹15K</td>
+                                <td>✅ Qm4f...</td>
+                                <td>✅ 0xabc...</td>
+                                <td><span class="badge badge-active">ACTIVE</span></td>
+                            </tr>
+                            <tr>
+                                <td><code style="color:var(--accent)">vc-002</code></td>
+                                <td>did:polygon:0x456...</td>
+                                <td>Plumbing</td>
+                                <td>80h</td>
+                                <td>₹12K</td>
+                                <td>✅ Qm7b...</td>
+                                <td>✅ 0xdef...</td>
+                                <td><span class="badge badge-active">ACTIVE</span></td>
+                            </tr>
+                            <tr>
+                                <td><code style="color:var(--accent)">vc-003</code></td>
+                                <td>did:polygon:0x789...</td>
+                                <td>Electrical</td>
+                                <td>160h</td>
+                                <td>₹24K</td>
+                                <td>✅ Qm9c...</td>
+                                <td>✅ 0xghi...</td>
+                                <td><span class="badge badge-active">ACTIVE</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Workers Section -->
+            <div id="section-workers" style="display:none">
+                <div class="section-header">
+                    <h2>Registered Workers</h2>
+                    <div class="section-desc">Workers registered under your organization.</div>
+                </div>
+                <div class="card">
+                    <div class="search-bar"><input type="text" placeholder="🔍 Search workers..." onkeyup="filterTable(this,'workerTable')"></div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>DID</th>
+                                <th>Credentials</th>
+                                <th>Total Hours</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ravi Kumar</td>
+                                <td>did:polygon:0x123...</td>
+                                <td>3</td>
+                                <td>360h</td>
+                                <td>Jan 2025</td>
+                            </tr>
+                            <tr>
+                                <td>Priya Singh</td>
+                                <td>did:polygon:0x456...</td>
+                                <td>2</td>
+                                <td>180h</td>
+                                <td>Mar 2025</td>
+                            </tr>
+                            <tr>
+                                <td>Amit Patel</td>
+                                <td>did:polygon:0x789...</td>
+                                <td>4</td>
+                                <td>520h</td>
+                                <td>Jun 2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="section-settings" style="display:none">
+                <div class="section-header">
+                    <h2>Issuer Settings</h2>
+                    <div class="section-desc">Configure your organization profile.</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Organization Profile</div>
+                    <div class="form-group"><label class="form-label">Organization Name</label><input class="form-input"
+                            value="Jan Shikshan Sansthan, Mumbai"></div>
+                    <div class="form-group"><label class="form-label">Issuer DID</label><input class="form-input"
+                            value="did:polygon:0x7F2c...A91B" readonly style="opacity:0.6"></div>
+                    <div class="form-group"><label class="form-label">Description</label><input class="form-input"
+                            value="Government training institute supporting construction workers in Maharashtra"></div>
+                    <button class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">✅ Credential issued successfully!</div>
+
+    <!-- Floating Help Button -->
+    <button class="fab-help" onclick="toggleHelp()" aria-label="Help" title="Help">?</button>
+    <div class="help-panel" id="helpPanel">
+        <h3>❓ Quick Help</h3>
+        <div class="help-item"><strong>What is a DID?</strong> A Decentralized Identifier — like a digital passport on blockchain.</div>
+        <div class="help-item"><strong>What is IPFS?</strong> A distributed file storage system. Credentials are stored here permanently.</div>
+        <div class="help-item"><strong>What is NSQF?</strong> National Skills Qualifications Framework — India's skill level system (L1–L10).</div>
+        <div class="help-item"><strong>What is On-chain?</strong> Data recorded on the Polygon blockchain — permanent and tamper-proof.</div>
+    </div>
+
+    <script>
+        // ── API Configuration ──
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : 'https://mdtl-backend.onrender.com';
+
+        // Completed jobs data for auto-fill
+        const completedJobs = [
+            {
+                workerDid: 'did:polygon:0x123456789abcdef',
+                skill: 'Construction — Masonry (NSQF L3)',
+                workHours: 240,
+                income: 36000,
+                periodStart: '2026-01-15',
+                periodEnd: '2026-03-01',
+                location: 'Andheri West, Mumbai',
+                workerName: 'Ravi Kumar',
+                title: 'Masonry Work — Residential Building',
+            },
+            {
+                workerDid: 'did:polygon:0x789012345abcdef',
+                skill: 'Plumbing & Sanitation (NSQF L2)',
+                workHours: 160,
+                income: 32000,
+                periodStart: '2026-02-01',
+                periodEnd: '2026-03-05',
+                location: 'Powai, Mumbai',
+                workerName: 'Sunita Devi',
+                title: 'Plumber — Society Maintenance',
+            },
+            {
+                workerDid: 'did:polygon:0xabcdef123456789',
+                skill: 'Electrical Wiring — Domestic (NSQF L4)',
+                workHours: 320,
+                income: 55000,
+                periodStart: '2026-01-10',
+                periodEnd: '2026-03-10',
+                location: 'BKC, Mumbai',
+                workerName: 'Amit Paswan',
+                title: 'Electrical Wiring — Commercial Office',
+            },
+        ];
+
+        const sectionNames = {
+            dashboard: 'Dashboard',
+            issue: 'Issue Credential',
+            credentials: 'Issued Credentials',
+            workers: 'Workers',
+            settings: 'Settings'
+        };
+
+        // Onboarding
+        if (!localStorage.getItem('mdtl_issuer_onboarded')) {
+            document.getElementById('onboardingModal').style.display = 'flex';
+        } else {
+            document.getElementById('onboardingModal').style.display = 'none';
+        }
+        function dismissOnboarding() {
+            localStorage.setItem('mdtl_issuer_onboarded', 'true');
+            document.getElementById('onboardingModal').style.display = 'none';
+        }
+
+        // Sidebar toggle (mobile)
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Help panel
+        function toggleHelp() {
+            const panel = document.getElementById('helpPanel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Table search/filter
+        function filterTable(input, tableId) {
+            const filter = input.value.toLowerCase();
+            const table = input.closest('.card').querySelector('table');
+            if (!table) return;
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        }
+
+        function showSection(name) {
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');
+            document.getElementById('section-' + name).style.display = 'block';
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            if (event && event.target) {
+                const item = event.target.closest('.sidebar-item');
+                if (item) item.classList.add('active');
+            }
+            // Update breadcrumb
+            document.getElementById('breadcrumbCurrent').textContent = sectionNames[name] || name;
+            // Close mobile sidebar
+            document.getElementById('sidebar').classList.remove('open');
+        }
+
+        function setInputValue(id, value) {
+            const el = document.getElementById(id);
+            // Use native setter to ensure React-like frameworks and browser rendering update
+            const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+            nativeSetter.call(el, value);
+            el.setAttribute('value', value);
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        function autoFillFromJob(index) {
+            const job = completedJobs[index];
+            if (!job) return;
+
+            // Switch to issue section if not already there
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.style.display = 'none');
+            document.getElementById('section-issue').style.display = 'block';
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item')[1].classList.add('active');
+
+            // Fill form fields with explicit value setting
+            setInputValue('workerDid', job.workerDid);
+            setInputValue('workHours', String(job.workHours));
+            setInputValue('income', String(job.income));
+            setInputValue('periodStart', job.periodStart);
+            setInputValue('periodEnd', job.periodEnd);
+            setInputValue('location', job.location);
+
+            // Set skill dropdown
+            const skillSelect = document.getElementById('skill');
+            for (let i = 0; i < skillSelect.options.length; i++) {
+                if (skillSelect.options[i].value === job.skill) {
+                    skillSelect.selectedIndex = i;
+                    break;
+                }
+            }
+
+            // Show auto-fill notice
+            const notice = document.getElementById('autofillNotice');
+            notice.style.display = 'block';
+            notice.innerHTML = `<div class="autofill-badge">✅ Auto-filled from: ${job.title} (${job.workerName})</div>`;
+
+            // Smooth scroll to form
+            setTimeout(() => {
+                document.getElementById('issueForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        function clearForm() {
+            document.getElementById('issueForm').reset();
+            document.getElementById('autofillNotice').style.display = 'none';
+        }
+
+        async function issueCredential(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = '⏳ Signing & Issuing...';
+            btn.disabled = true;
+
+            const toast = document.getElementById('toast');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/credentials/issue`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        workerDid: document.getElementById('workerDid').value,
+                        issuerDid: 'did:polygon:0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+                        issuerPrivateKey: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+                        skill: document.getElementById('skill').value,
+                        workHours: Number(document.getElementById('workHours').value),
+                        income: Number(document.getElementById('income').value),
+                        period: {
+                            start: document.getElementById('periodStart').value,
+                            end: document.getElementById('periodEnd').value,
+                        },
+                        location: document.getElementById('location').value,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    toast.textContent = `✅ Credential issued! ID: ${data.data.credentialId.slice(0, 8)}...`;
+                    toast.style.background = 'var(--success)';
+                    clearForm();
+                } else {
+                    toast.textContent = `❌ Error: ${data.error}`;
+                    toast.style.background = 'var(--accent)';
+                }
+            } catch (error) {
+                toast.textContent = `❌ Network error: Could not connect to backend`;
+                toast.style.background = 'var(--accent)';
+            }
+
+            btn.textContent = '🔏 Sign & Issue Credential';
+            btn.disabled = false;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 4000);
+        }
+
+        // ── Theme Toggle ──
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.removeAttribute('data-theme');
+                btn.textContent = '🌙';
+                btn.title = 'Switch to Dark Mode';
+                localStorage.setItem('mdtl-theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                btn.textContent = '☀️';
+                btn.title = 'Switch to Light Mode';
+                localStorage.setItem('mdtl-theme', 'dark');
+            }
+        }
+
+        // Apply saved theme on load
+        (function() {
+            const saved = localStorage.getItem('mdtl-theme');
+            if (saved === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                const btn = document.getElementById('themeToggle');
+                if (btn) { btn.textContent = '☀️'; btn.title = 'Switch to Light Mode'; }
+            }
+        })();
+    </script>
+</body>
+
+</html>

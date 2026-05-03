@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDTL Admin Hub</title>
+    <meta name="description" content="MDTL Platform Admin Hub — Central dashboard to manage all platform services">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --bg: #F0F2F8;
+            --surface: #FFFFFF;
+            --border: #E2E8F0;
+            --primary: #6366F1;
+            --primary-glow: rgba(99,102,241,0.18);
+            --accent: #F59E0B;
+            --text: #1E293B;
+            --text2: #475569;
+            --text3: #94A3B8;
+            --success: #10B981;
+            --warning: #F97316;
+            --danger: #EF4444;
+            --gradient-primary: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .header-logo { display:flex; align-items:center; gap:14px; }
+        .header-logo span { font-size:32px; }
+        .header-title {
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 3px;
+        }
+        .header-subtitle { font-size:12px; color:var(--text3); letter-spacing:1.5px; }
+        .header-badge {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 2px 12px var(--primary-glow);
+        }
+
+        /* Main */
+        .main { max-width:1100px; margin:0 auto; padding:36px 24px; }
+
+        /* Welcome */
+        .welcome {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-out;
+        }
+        .welcome h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .welcome p { color: var(--text2); font-size: 15px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+        .stat-card {
+            background: var(--surface);
+            border-radius: 14px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: scaleIn 0.4s ease-out both;
+        }
+        .stat-card:nth-child(1) { animation-delay: 0s; }
+        .stat-card:nth-child(2) { animation-delay: 0.08s; }
+        .stat-card:nth-child(3) { animation-delay: 0.16s; }
+        .stat-card:nth-child(4) { animation-delay: 0.24s; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .stat-num { font-size: 30px; font-weight: 800; color: var(--primary); }
+        .stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; font-weight: 500; }
+
+        /* Service Cards */
+        .services-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 36px;
+        }
+        .service-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            animation: slideUp 0.5s ease-out both;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.18s; }
+        .service-card:nth-child(3) { animation-delay: 0.26s; }
+        .service-card:nth-child(4) { animation-delay: 0.34s; }
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(99,102,241,0.12);
+            border-color: var(--primary);
+        }
+        .service-card::after {
+            content: '→';
+            position: absolute;
+            top: 28px;
+            right: 28px;
+            font-size: 20px;
+            color: var(--text3);
+            transition: all 0.3s;
+        }
+        .service-card:hover::after { color: var(--primary); transform: translateX(4px); }
+        .service-icon { font-size: 40px; margin-bottom: 14px; }
+        .service-name { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+        .service-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 14px; }
+        .service-meta { display: flex; gap: 16px; }
+        .service-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+        .tag-port { background: rgba(99,102,241,0.1); color: var(--primary); }
+        .tag-status { background: rgba(16,185,129,0.1); color: var(--success); }
+        .tag-status.offline { background: rgba(239,68,68,0.1); color: var(--danger); }
+
+        /* Network Info */
+        .network-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            animation: fadeIn 0.6s ease-out 0.4s both;
+        }
+        .network-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--primary); }
+        .network-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .network-item {
+            background: #F8F9FC;
+            border-radius: 10px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+        }
+        .network-item-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .network-item-value { font-size: 14px; font-weight: 600; font-family: 'Inter', monospace; color: var(--text); word-break: break-all; }
+        .network-item-value.highlight { color: var(--primary); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text3);
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes scaleIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
+
+        /* Responsive */
+        @media(max-width:768px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .services-grid { grid-template-columns: 1fr; }
+            .network-grid { grid-template-columns: 1fr; }
+            .header { padding: 16px 20px; }
+            .main { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <span>⛓️</span>
+            <div>
+                <div class="header-title">MDTL</div>
+                <div class="header-subtitle">ADMIN HUB</div>
+            </div>
+        </div>
+        <div class="header-badge">Platform Administrator</div>
+    </div>
+
+    <div class="main">
+        <div class="welcome">
+            <h1>Welcome to MDTL Admin Hub</h1>
+            <p>Majdoor Digital Trust-Ledger — Central command center for managing all platform services, blockchain infrastructure, and credential operations.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num" id="statServices">0</div>
+                <div class="stat-label">Active Services</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">4</div>
+                <div class="stat-label">Smart Contracts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">3</div>
+                <div class="stat-label">ZK Circuits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">31337</div>
+                <div class="stat-label">Chain ID</div>
+            </div>
+        </div>
+
+        <!-- Services -->
+        <div class="services-title">🚀 Platform Services</div>
+        <div class="services-grid">
+            <a class="service-card" href="http://localhost:3000/health" target="_blank" id="cardBackend">
+                <div class="service-icon">⚙️</div>
+                <div class="service-name">Backend API</div>
+                <div class="service-desc">REST API server handling credential issuance, verification, proof validation, and blockchain interactions.</div>
+                <div class="service-meta">
+                    <span class="service-tag tag-port">Port 3000</span>
+                    <span class="service-tag tag-status offline" id="statusBackend">● Checking...</span>
+                </div>
+            </a>
+            <a class="service-card" href="http://localhost:3001" target="_blank" id="cardIssuer">
+                <div class="service-icon">🏢</div>
+                <div class="service-name">Issuer Portal</div>
+                <div class="service-desc">Web portal for credential issuers (training institutes, employers) to issue and manage verifiable work credentials.</div>
+                <div class="service-meta">
+                    <span class="service-tag tag-port">Port 3001</span>
+                    <span class="service-tag tag-status offline" id="statusIssuer">● Checking...</span>
+                </div>
+            </a>
+            <a class="service-card" href="http://localhost:3002" target="_blank" id="cardVerifier">
+                <div class="service-icon">🏦</div>
+                <div class="service-name">Verifier Portal</div>
+                <div class="service-desc">Verification portal for banks and employers to verify credentials and ZK proofs without accessing personal data.</div>
+                <div class="service-meta">
+                    <span class="service-tag tag-port">Port 3002</span>
+                    <span class="service-tag tag-status offline" id="statusVerifier">● Checking...</span>
+                </div>
+            </a>
+            <a class="service-card" href="http://127.0.0.1:8545" target="_blank" id="cardHardhat">
+                <div class="service-icon">⛓️</div>
+                <div class="service-name">Hardhat Blockchain</div>
+                <div class="service-desc">Local Ethereum node running Hardhat network with 20 pre-funded accounts and deployed MDTL smart contracts.</div>
+                <div class="service-meta">
+                    <span class="service-tag tag-port">Port 8545</span>
+                    <span class="service-tag tag-status offline" id="statusHardhat">● Checking...</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Network Info -->
+        <div class="network-card">
+            <div class="network-title">🔗 Blockchain Network Configuration</div>
+            <div class="network-grid">
+                <div class="network-item">
+                    <div class="network-item-label">Network Name</div>
+                    <div class="network-item-value">Hardhat Local</div>
+                </div>
+                <div class="network-item">
+                    <div class="network-item-label">RPC URL</div>
+                    <div class="network-item-value highlight">http://127.0.0.1:8545</div>
+                </div>
+                <div class="network-item">
+                    <div class="network-item-label">Chain ID</div>
+                    <div class="network-item-value">31337</div>
+                </div>
+                <div class="network-item">
+                    <div class="network-item-label">Currency Symbol</div>
+                    <div class="network-item-value">ETH</div>
+                </div>
+                <div class="network-item">
+                    <div class="network-item-label">Deployer Account (#0)</div>
+                    <div class="network-item-value" style="font-size:11px">0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266</div>
+                </div>
+                <div class="network-item">
+                    <div class="network-item-label">Deployer Private Key</div>
+                    <div class="network-item-value" style="font-size:9px;color:var(--text3)">0xac0974bec...4f2ff80</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        MDTL Platform v1.0 — Majdoor Digital Trust-Ledger &middot; Built with Polygon, IPFS, ZK-SNARKs
+    </div>
+
+    <script>
+        // ── Environment Detection ──
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+        const SERVICES = {
+            backend: isLocal ? 'http://localhost:3000' : 'https://mdtl-backend.onrender.com',
+            issuer: isLocal ? 'http://localhost:3001' : 'https://mdtl-issuer.vercel.app',
+            verifier: isLocal ? 'http://localhost:3002' : 'https://mdtl-verifier.vercel.app',
+            hardhat: isLocal ? 'http://127.0.0.1:8545' : 'https://rpc-amoy.polygon.technology',
+        };
+
+        // Update card links dynamically
+        document.getElementById('cardBackend').href = SERVICES.backend + (isLocal ? '/health' : '/health');
+        document.getElementById('cardIssuer').href = SERVICES.issuer;
+        document.getElementById('cardVerifier').href = SERVICES.verifier;
+        document.getElementById('cardHardhat').href = isLocal ? SERVICES.hardhat : 'https://amoy.polygonscan.com';
+
+        // Update network info for production
+        if (!isLocal) {
+            document.querySelector('.network-item-value.highlight').textContent = 'https://rpc-amoy.polygon.technology';
+            document.querySelectorAll('.network-item')[0].querySelector('.network-item-value').textContent = 'Polygon Amoy Testnet';
+            document.querySelectorAll('.network-item')[2].querySelector('.network-item-value').textContent = '80002';
+            document.querySelectorAll('.network-item')[3].querySelector('.network-item-value').textContent = 'POL';
+        }
+
+        // Health check all services
+        async function checkService(url, statusId) {
+            const el = document.getElementById(statusId);
+            try {
+                const controller = new AbortController();
+                setTimeout(() => controller.abort(), 5000);
+                const resp = await fetch(url, { signal: controller.signal, mode: 'no-cors' });
+                el.textContent = '● Online';
+                el.classList.remove('offline');
+                return true;
+            } catch {
+                el.textContent = '● Offline';
+                el.classList.add('offline');
+                return false;
+            }
+        }
+
+        async function checkAll() {
+            const results = await Promise.all([
+                checkService(SERVICES.backend + '/health', 'statusBackend'),
+                checkService(SERVICES.issuer, 'statusIssuer'),
+                checkService(SERVICES.verifier, 'statusVerifier'),
+                checkService(SERVICES.hardhat, 'statusHardhat'),
+            ]);
+            document.getElementById('statServices').textContent = results.filter(Boolean).length;
+        }
+
+        checkAll();
+        setInterval(checkAll, 10000);
+    </script>
+</body>
+</html>

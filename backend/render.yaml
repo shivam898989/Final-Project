@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: mdtl-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: MONGODB_URI
+        sync: false
+      - key: POLYGON_RPC_URL
+        value: https://rpc-amoy.polygon.technology
+      - key: DEPLOYER_PRIVATE_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ISSUER_REGISTRY_ADDRESS
+        sync: false
+      - key: CREDENTIAL_REGISTRY_ADDRESS
+        sync: false
+      - key: REPUTATION_REGISTRY_ADDRESS
+        sync: false
+      - key: PROOF_VERIFIER_ADDRESS
+        sync: false

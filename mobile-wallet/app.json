@@ -1,0 +1,39 @@
+{
+    "expo": {
+        "name": "MDTL Wallet",
+        "slug": "mdtl-wallet",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "dark",
+        "splash": {
+            "backgroundColor": "#0a0a23"
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": false,
+            "bundleIdentifier": "network.mdtl.wallet",
+            "infoPlist": {
+                "NSFaceIDUsageDescription": "Use Face ID to unlock your MDTL Wallet",
+                "NSCameraUsageDescription": "Scan QR codes to share or receive proofs"
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "backgroundColor": "#0a0a23"
+            },
+            "package": "network.mdtl.wallet",
+            "permissions": [
+                "USE_BIOMETRIC",
+                "USE_FINGERPRINT",
+                "CAMERA"
+            ]
+        },
+        "plugins": [
+            "expo-secure-store",
+            "expo-local-authentication"
+        ]
+    }
+}
